@@ -56,7 +56,7 @@ body::after{content:"";position:fixed;inset:0;background:url("data:image/svg+xml
 #ld{position:fixed;inset:0;background:#000;z-index:20;display:flex;align-items:center;justify-content:center;font-size:1.05rem;letter-spacing:.35em;text-transform:uppercase;opacity:.4;transition:opacity 1.8s;color:#f9204a}
 .cta-btn{position:fixed;right:2rem;z-index:10;pointer-events:all;cursor:pointer;background:#f9204a;border:none;outline:none;text-decoration:none;font-family:"Krona One",sans-serif;font-size:.78rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:#000;padding:.82rem 1.65rem;opacity:1;transition:opacity .35s;line-height:1;white-space:nowrap}
 .cta-btn:hover{opacity:.5}
-#da-entry{bottom:2.2rem}#bio-entry{bottom:5rem}#tarot-entry{bottom:7.8rem}
+#da-entry{bottom:2.2rem}#bio-entry{bottom:5rem}#tarot-entry{bottom:7.8rem}#movimiento-entry{bottom:10.6rem}
 #lightbox{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0);display:none;align-items:center;justify-content:center;cursor:zoom-out;transition:background .5s}
 #lightbox.lb-open{display:flex}#lightbox.lb-vis{background:rgba(0,0,0,.92)}
 #lb-img{max-width:96vw;max-height:96vh;width:96vw;height:96vh;object-fit:contain;opacity:0;transform:scale(.92);transition:opacity .45s,transform .45s;pointer-events:none;box-shadow:0 0 80px rgba(0,0,0,.8)}
@@ -242,6 +242,7 @@ body::after{content:"";position:fixed;inset:0;background:url("data:image/svg+xml
   <a class="ham-link" href="acerca.html" onclick="closeMenu();">Sobre el artista</a>
   <a class="ham-link" href="dioses_artificiales.html" onclick="closeMenu();">Dioses Artificiales</a>
 <a class="ham-link" href="tarot.html" onclick="closeMenu();">Tarot</a>
+<a class="ham-link" href="movimiento.html" onclick="closeMenu();">Movimiento</a>
   <div class="ham-sep"></div>
   <button id="ham-sound-btn" onclick="hamToggleSound()">&#9654;&nbsp;Sonido</button>
 </div>
@@ -270,6 +271,7 @@ body::after{content:"";position:fixed;inset:0;background:url("data:image/svg+xml
 <a id="bio-entry" class="cta-btn" href="acerca.html">Sobre el artista</a>
 <a id="da-entry" class="cta-btn" href="dioses_artificiales.html">Dioses Artificiales</a>
 <a id="tarot-entry" class="cta-btn" href="tarot.html">Tarot</a>
+<a id="movimiento-entry" class="cta-btn" href="movimiento.html">Movimiento</a>
 <div id="lightbox" onclick="closeLightbox()">
   <img id="lb-img" src="" alt=""><div id="lb-title"></div>
   <button id="lb-close" onclick="event.stopPropagation();closeLightbox()">&times;</button>
