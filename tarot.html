@@ -76,6 +76,10 @@ html,body{width:100%;height:100%;background:var(--bg);color:#e8e0d8;overflow:hid
 .card-face{
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
 }
+.card-front{ pointer-events:none; }
+.card-wrap.flipped .card-front{ pointer-events:auto; }
+.card-back{ pointer-events:auto; }
+.card-wrap.flipped .card-back{ pointer-events:none; }
 .card-front{transform:rotateY(180deg);}
 .card-front .tarot-img{
   width:100%;display:block;object-fit:cover;
@@ -357,10 +361,24 @@ html,body{width:100%;height:100%;background:var(--bg);color:#e8e0d8;overflow:hid
   function next(){ openAt(curIdx + 1); }
 
   document.addEventListener('click', function(e){
-    // Don't intercept lightbox controls
     if(e.target.closest('#lightbox')) return;
+
+    // Clic en la cara frontal (carta ya volteada) → abrir lightbox
+    var front = e.target.closest('.card-front');
+    if(front){
+      var wrap = front.closest('.card-wrap');
+      if(wrap && wrap.classList.contains('flipped')){
+        var img = front.querySelector('img[data-idx]');
+        if(img) openAt(parseInt(img.getAttribute('data-idx')));
+        return;
+      }
+    }
+
+    // Clic en carta sin voltear → voltearla
     var wrap = e.target.closest('.card-wrap');
-    if(wrap){ wrap.classList.toggle('flipped'); }
+    if(wrap && !wrap.classList.contains('flipped')){
+      wrap.classList.add('flipped');
+    }
   });
 
   lbClose.addEventListener('click', close);
@@ -440,6 +458,43 @@ html,body{width:100%;height:100%;background:var(--bg);color:#e8e0d8;overflow:hid
       src.connect(reverb);
       reverb.connect(reverbGain);
       reverbGain.connect(master);                   // reverb wet
+
+      // Waveshaper distorsión
+      var distCurve = (function(){
+        var n = 256, curve = new Float32Array(n);
+        for(var i=0;i<n;i++){
+          var x = (i*2/n)-1;
+          curve[i] = (Math.PI+320)*x/(Math.PI+320*Math.abs(x));
+        }
+        return curve;
+      })();
+      var waveShaper = ctx.createWaveShaper();
+      waveShaper.curve = distCurve;
+      waveShaper.oversample = '4x';
+      var distGain = ctx.createGain();
+      distGain.gain.value = 0.08;
+      src.connect(waveShaper);
+      waveShaper.connect(distGain);
+      distGain.connect(master);
+
+      // Ruido granular sutil
+      var noiseLen = ctx.sampleRate * 2;
+      var noiseBuf = ctx.createBuffer(1, noiseLen, ctx.sampleRate);
+      var noiseData = noiseBuf.getChannelData(0);
+      for(var ni=0;ni<noiseLen;ni++) noiseData[ni] = Math.random()*2-1;
+      var noiseNode = ctx.createBufferSource();
+      noiseNode.buffer = noiseBuf;
+      noiseNode.loop = true;
+      var noiseLpf = ctx.createBiquadFilter();
+      noiseLpf.type = 'lowpass';
+      noiseLpf.frequency.value = 800;
+      var noiseGain = ctx.createGain();
+      noiseGain.gain.value = 0.025;
+      noiseNode.connect(noiseLpf);
+      noiseLpf.connect(noiseGain);
+      noiseGain.connect(master);
+      noiseNode.start(0);
+
       master.connect(ctx.destination);
 
       src.start(0);
