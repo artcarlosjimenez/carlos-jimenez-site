@@ -693,9 +693,15 @@ function buildChain(){
   }).catch(e=>console.warn("audio:",e));
 }
 function enterSite(){
+  sessionStorage.setItem("site_entered","1");
   try{actx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}
   const splash=document.getElementById("splash");splash.classList.add("fade-out");setTimeout(()=>splash.style.display="none",1400);
   if(actx){const p=actx.state==="suspended"?actx.resume():Promise.resolve();p.then(()=>buildChain()).catch(e=>console.warn(e));}
+}
+// Skip splash when returning from a subpage
+if(sessionStorage.getItem("site_entered")==="1"){
+  const _sp=document.getElementById("splash");
+  if(_sp){_sp.style.display="none";}
 }
 </script>
 
